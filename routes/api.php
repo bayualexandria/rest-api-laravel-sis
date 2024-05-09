@@ -18,14 +18,18 @@ Route::controller(AuthenticationController::class)->prefix('auth')->group(functi
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['isAdmin'])->group(function () {
-        Route::controller(SiswaController::class)->group(function () {
-            Route::get('siswa', 'index');
-            Route::get('siswa/{nis}', 'show');
-        });
+
         Route::get('user', function () {
             $users = User::all();
             return response()->json(['data' => $users, 'message' => 'Get data success', 'status' => 200], 200);
         });
+
+        
+    });
+
+    Route::controller(SiswaController::class)->group(function () {
+        Route::get('siswa', 'index');
+        Route::get('siswa/{nis}', 'show');
     });
 
     Route::get('siswa/{nis}', [SiswaController::class, 'show']);

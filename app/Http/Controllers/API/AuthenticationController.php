@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\{User, Siswa};
+use App\Models\{Guru, User, Siswa};
 use App\Notifications\EmailVerification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -83,7 +83,16 @@ class AuthenticationController extends Controller
 
                         $tokenResult = $user->createToken('Personal Access Token');
                         $token = $tokenResult->plainTextToken;
-
+                        $siswa = Siswa::where('nis', $user->username)->first();
+                        if (!$siswa) {
+                            Siswa::create(['nis' => $user->username, 'nama' => $user->name]);
+                            return response()->json([
+                                'user' => $user,
+                                'accessToken' => $token,
+                                'token_type' => 'Bearer',
+                                'status' => 200
+                            ], 200);
+                        }
                         return response()->json([
                             'user' => $user,
                             'accessToken' => $token,
@@ -101,7 +110,8 @@ class AuthenticationController extends Controller
         return response()->json(['message' => 'NIS belum terdaftar', 'status' => 403], 403);
     }
 
-    public function admin(Request $request) {
+    public function admin(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'username' => 'required|numeric',
             'password' => 'required'
@@ -122,7 +132,16 @@ class AuthenticationController extends Controller
 
                         $tokenResult = $user->createToken('Personal Access Token');
                         $token = $tokenResult->plainTextToken;
-
+                        $guru = Guru::where('nip', $user->username)->first();
+                        if (!$guru && $user->status_id == 2) {
+                            Guru::create(['nip' => $user->username, 'nama' => $user->name]);
+                            return response()->json([
+                                'user' => $user,
+                                'accessToken' => $token,
+                                'token_type' => 'Bearer',
+                                'status' => 200
+                            ], 200);
+                        }
                         return response()->json([
                             'user' => $user,
                             'accessToken' => $token,
