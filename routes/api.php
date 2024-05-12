@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\API\{AuthenticationController, GuruController, SiswaController};
-use App\Http\Middleware\IsAdmin;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,17 +23,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
             return response()->json(['data' => $users, 'message' => 'Get data success', 'status' => 200], 200);
         });
 
-        
+        Route::controller(GuruController::class)->prefix('guru')->group(function () {
+            Route::get('/', 'index');
+            Route::get('{nip}', 'show');
+        });
     });
 
-    Route::controller(SiswaController::class)->group(function () {
-        Route::get('siswa', 'index');
-        Route::get('siswa/{nis}', 'show');
-    });
 
-    Route::get('siswa/{nis}', [SiswaController::class, 'show']);
-    Route::get('guru/{nip}', [GuruController::class, 'show']);
-    Route::post('guru/{nip}', [GuruController::class, 'addDataGuru']);
+    Route::controller(SiswaController::class)->prefix('siswa')->group(function () {
+        Route::get('/', 'index');
+        Route::get('{nis}', 'show');
+    });
 
     Route::get('user/{username}', function ($username) {
         $user = User::where('username', $username)->first();

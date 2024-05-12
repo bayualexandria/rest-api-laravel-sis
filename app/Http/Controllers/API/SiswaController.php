@@ -18,14 +18,6 @@ class SiswaController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -36,31 +28,23 @@ class SiswaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Siswa $siswa)
+    public function show(string $nis)
     {
-        return response()->json(['data' => $siswa, 'message' => 'Get data success', 'status' => 200], 200);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Siswa $siswa)
-    {
-        //
+        return response()->json(['data' => $nis, 'message' => 'Data Ok', 'status' => 200], 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Siswa $siswa)
+    public function update(Request $request, string $nis)
     {
-        //
+        return response()->json(['data' => $nis, 'message' => 'Data Ok', 'status' => 200], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Siswa $siswa)
+    public function destroy(string $id)
     {
         //
     }
