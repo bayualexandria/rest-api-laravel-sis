@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Guru;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class GuruController extends Controller
 {
@@ -42,7 +43,43 @@ class GuruController extends Controller
      */
     public function update(Request $request, string $nip)
     {
-        return response()->json(['data' => $nip, 'message' => 'Data berhasil diubah', 'status' => 200], 200);
+        $guru = Guru::where('nip', $nip)->first();
+        if ($request->hasFile('image_profile')) {
+            if ($guru->image_profile == null) {
+                // $image = $request->image_profile->store('public/assets/images/guru/' . $nip);
+                $image = $request->file('image_profile');
+                $image->storeAs('public/assets/images/guru/' . $nip . '/', $image->hashName());
+            } else {
+                // Storage::delete($guru->image_profile);
+                // $image = $request->image_profile->store('public/assets/images/guru/' . $nip);
+                $image = $request->file('image_profile');
+                $image->storeAs('public/assets/images/guru/' . $nip . '/', $image->hashName());
+
+                //delete old image
+                Storage::delete('public/' . basename($guru->image_profile));
+            }
+        }
+
+        $data = [
+            'nip' => $nip,
+            'nama' => $guru->nama
+                ? $guru->nama
+                : $request->nama,
+            'jenis_kelamin' => $guru->jenis_kelamin
+                ? $guru->jenis_kelamin
+                : $request->jenis_kelamin,
+            'no_hp' => $guru->no_hp
+                ? $guru->no_hp
+                : $request->no_hp,
+            'image_profile' => 'assets/images/guru/' . $nip . '/' . $image->hashName(),
+            'alamat' => $request->alamat
+                ? $request->alamat
+                : $guru->alamat
+        ];
+
+        $dataGuru = $guru->update($data);
+
+        return response()->json(['data' => $data, 'process' => $dataGuru, 'message' => 'Data berhasil diubah', 'status' => 200], 200);
     }
 
     /**

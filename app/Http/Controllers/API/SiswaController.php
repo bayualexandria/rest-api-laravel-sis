@@ -38,7 +38,7 @@ class SiswaController extends Controller
      */
     public function update(Request $request, string $nis)
     {
-        return response()->json(['data' => $nis, 'message' => 'Data Ok', 'status' => 200], 200);
+        return response()->json(['data' => $request->nama, 'message' => 'Data Ok', 'status' => 200], 200);
     }
 
     /**

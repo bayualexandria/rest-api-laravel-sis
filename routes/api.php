@@ -25,7 +25,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::controller(GuruController::class)->prefix('guru')->group(function () {
             Route::get('/', 'index');
-            Route::get('{nip}', 'show');
+            // Route::get('{nip}', 'show');
+            Route::post('{nip}', [GuruController::class, 'update']);
         });
     });
 
