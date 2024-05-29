@@ -25,8 +25,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::controller(GuruController::class)->prefix('guru')->group(function () {
             Route::get('/', 'index');
-            // Route::get('{nip}', 'show');
-            Route::post('{nip}', [GuruController::class, 'update']);
+            Route::post('/', 'store');
+            Route::get('{nip}', 'show');
+            Route::post('{nip}', 'update');
+            Route::delete('{nip}', 'destroy');
         });
     });
 
@@ -38,7 +40,22 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('user/{username}', function ($username) {
         $user = User::where('username', $username)->first();
-        return response()->json(['data' => $user, 'message' => 'Get data success', 'status' => 200], 200);
+        return response()->json([
+            'data' => [
+                'name' => $user->name,
+                'username' => $user->username,
+                'email' => $user->email,
+                'guru' => [
+                    'nip' => $user->guru->nip,
+                    'nama' => $user->guru->nama,
+                    'jenis_kelamin' => $user->guru->jenis_kelamin,
+                    'no_hp' => $user->guru->no_hp,
+                    'alamat' => $user->guru->alamat,
+                ]
+            ],
+            'message' => 'Get data success',
+            'status' => 200
+        ], 200);
     });
 
     Route::get('logout', [AuthenticationController::class, 'logout']);

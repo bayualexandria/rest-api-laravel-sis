@@ -47,8 +47,10 @@ class AuthenticationController extends Controller
             'email' => $request->email,
             'username' => $request->username,
             'password' => bcrypt($request->password),
+            'status_id' => 2
+
         ]);
-        Siswa::create(['nis' => $request->username]);
+        // Siswa::create(['nis' => $request->username]);
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->plainTextToken;
         $user->notify(new EmailVerification($user));

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Siswa;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class SiswaController extends Controller
@@ -13,8 +14,8 @@ class SiswaController extends Controller
      */
     public function index()
     {
-        $siswa = Siswa::all();
-        return response()->json(['data' => $siswa, 'message' => 'Success', 'status' => 200], 200);
+        $user = Siswa::all();
+        return response()->json(['data' => $user, 'message' => 'Success', 'status' => 200], 200);
     }
 
     /**
@@ -30,7 +31,11 @@ class SiswaController extends Controller
      */
     public function show(string $nis)
     {
-        return response()->json(['data' => $nis, 'message' => 'Data Ok', 'status' => 200], 200);
+        $siswa = Siswa::where('nis', $nis)->first();
+        if ($siswa) {
+            return response()->json(['data' => $siswa, 'message' => 'Data siswa dengan nis ' . $nis . ' berhasil ditampilkan', 'status' => 200], 200);
+        }
+        return response()->json(['message' => 'Data tidak ditemukan', 'status' => 403], 403);
     }
 
     /**

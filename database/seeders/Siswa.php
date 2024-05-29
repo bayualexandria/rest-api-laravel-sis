@@ -16,16 +16,26 @@ class Siswa extends Seeder
         $faker = Factory::create('id_ID');
         $gender = $faker->randomElement(['Laki-laki', 'Perempuan']);
         for ($i = 1; $i <= 50; $i++) {
+            $nik = $faker->nik;
+            $nama = $faker->name($gender);
             \DB::table('siswa')->insert(
                 [
-                    'nis' => $faker->randomDigit,
-                    'nama' => $faker->name($gender),
+                    'nis' => $nik,
+                    'nama' => $nama,
                     'jenis_kelamin' => $gender,
                     'no_hp' => $faker->phoneNumber,
                     'image_profile' => 'default.png',
                     'alamat' => $faker->address
                 ]
             );
+            \DB::table('users')->insert([
+                'username' => $nik,
+                'email' => $faker->email,
+                'name' => $nama,
+                'password' => bcrypt('admin123'),
+                'email_verified_at' => date('Y-m-d H:i:s', time()),
+                'status_id' => 3
+            ]);
         }
     }
 }
