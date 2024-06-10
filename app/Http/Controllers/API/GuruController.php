@@ -14,10 +14,15 @@ class GuruController extends Controller
     /**
      * Display a listing of the resource.
      */
+    protected $guru;
+    function __construct()
+    {
+        $this->guru = new Guru();
+    }
     public function index()
     {
-        $guru = Guru::all();
-        return response()->json(['data' => $guru, 'message' => `Data it's ok`, 'status' => 200], 200);
+
+        return response()->json(['data' => $this->guru->all(), 'message' => `Data it's ok`, 'status' => 200], 200);
     }
 
     /**
@@ -73,7 +78,7 @@ class GuruController extends Controller
             'image_profile' => 'assets/images/guru/' . $request->nip . '/' . $image->hashName(),
             'alamat' => $request->alamat
         ];
-        $guru = Guru::create($data);
+        $guru = $this->guru->create($data);
         return response()->json([
             'data' => $guru,
             'message' => "User dengan nama {$request->nama} berhasil ditambahkan!",
@@ -86,7 +91,7 @@ class GuruController extends Controller
      */
     public function show(string $nip)
     {
-        $guru = Guru::where('nip', $nip)->first();
+        $guru = $this->guru->where('nip', $nip)->first();
         if ($guru) {
             return response()->json(['data' => $guru, 'message' => 'Data guru dengan nip ' . $nip . ' berhasil ditampilkan', 'status' => 200], 200);
         }

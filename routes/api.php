@@ -1,6 +1,12 @@
 <?php
 
-use App\Http\Controllers\API\{AuthenticationController, GuruController, SiswaController};
+use App\Http\Controllers\API\{
+    AuthenticationController,
+    GuruController,
+    KelasController,
+    MapelController,
+    SiswaController
+};
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +29,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             return response()->json(['data' => $users, 'message' => 'Get data success', 'status' => 200], 200);
         });
 
+        // Start Guru
         Route::controller(GuruController::class)->prefix('guru')->group(function () {
             Route::get('/', 'index');
             Route::post('/', 'store');
@@ -30,13 +37,38 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('{nip}', 'update');
             Route::delete('{nip}', 'destroy');
         });
+        // End Guru
+
+        // Start Mapel
+        Route::controller(MapelController::class)->prefix('mapel')->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::get('{id}', 'show');
+            Route::put('{id}', 'update');
+            Route::delete('{id}', 'destroy');
+        });
+        // End Mapel
+
+        // Start Kelas
+        Route::controller(KelasController::class)->prefix('kelas')->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::get('{id}', 'show');
+            Route::put('{id}', 'update');
+            Route::delete('{id}', 'destroy');
+        });
+        // End Kelas
     });
 
-
+    // Start Siswa
     Route::controller(SiswaController::class)->prefix('siswa')->group(function () {
         Route::get('/', 'index');
+        Route::post('/', 'store');
         Route::get('{nis}', 'show');
+        Route::post('{nis}', 'update');
+        Route::delete('{nis}', 'destroy');
     });
+    // End Siswa
 
     Route::get('user/{username}', function ($username) {
         $user = User::where('username', $username)->first();
