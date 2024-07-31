@@ -1,3 +1,3 @@
-const repositori = "http://127.0.0.1:8000/api/";
+const repositori = "http://bayuwardana.getenjoyment.net/api/";
 
 export default repositori;

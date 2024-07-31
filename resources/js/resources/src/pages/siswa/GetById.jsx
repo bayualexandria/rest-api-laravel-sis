@@ -212,7 +212,7 @@ function GetById() {
                           src={
                             imagePreview
                               ? imagePreview
-                              : `http://127.0.0.1:8000/storage/${siswa.image_profile}`
+                              : `http://bayuwardana.getenjoyment.net/storage/${siswa.image_profile}`
                           }
                           className="w-full"
                         />
