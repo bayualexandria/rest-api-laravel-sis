@@ -1,46 +1,107 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import Cookies from "js-cookie";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import Login from "./src/pages/auth/Login";
+import Home from "./src/pages/Home";
+import Register from "./src/pages/auth/Register";
+import Profile from "./src/pages/profile/Profile";
+import Guru from "./src/pages/guru/Guru";
+import Siswa from "./src/pages/siswa/Siswa";
+import GetById from "./src/pages/siswa/GetById";
+import UpdateDataGuru from "./src/pages/guru/UpdateDataGuru";
 
 export default function Index() {
     return (
-        <>
-            <div className="bg-sky-500 w-full h-screen flex justify-center items-center flex-col gap-y-10">
-                <h1 className="font-bold text-white text-2xl">Sistem Informasi Sekolah</h1>
-                <div className="w-1/3 rounded-md shadow-lg bg-white p-5">
-                <form action="" className="flex flex-col gap-y-5">
-                    <div className="flex flex-col gap-y-3">
-                        <label
-                            htmlFor="username"
-                            className="font-bold text-sm text-slate-500"
-                        >
-                            Username
-                        </label>
-                        <input
-                            type="text"
-                            name=""
-                            id=""
-                            className="rounded-md shadow-md border border-sky-500 py-1 px-2"
-                        />
-                    </div>
-                    <div className="flex flex-col gap-y-3">
-                        <label
-                            htmlFor="password"
-                            className="font-bold text-sm text-slate-500"
-                        >
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            name=""
-                            id=""
-                            className="rounded-md shadow-md border border-sky-500 py-1 px-2"
-                        />
-                    </div>
-                </form>
-                </div>
-            </div>
-        </>
+        <BrowserRouter>
+            <Routes>
+                {/* Start UnAuthorization */}
+                <Route
+                    path="/login"
+                    element={
+                        <UnAthenticated>
+                            <Login />
+                        </UnAthenticated>
+                    }
+                />
+
+                <Route
+                    path="/register"
+                    element={
+                        <UnAthenticated>
+                            <Register />
+                        </UnAthenticated>
+                    }
+                />
+
+                <Route
+                    path="/"
+                    element={
+                        <PrivateRoute>
+                            <Home />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/profile"
+                    element={
+                        <PrivateRoute>
+                            <Profile />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/guru"
+                    element={
+                        <PrivateRoute>
+                            <Guru />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/guru/:nip"
+                    element={
+                        <PrivateRoute>
+                            <UpdateDataGuru />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/siswa"
+                    element={
+                        <PrivateRoute>
+                            <Siswa />
+                        </PrivateRoute>
+                    }
+                />
+                <Route
+                    path="/siswa/:nis"
+                    element={
+                        <PrivateRoute>
+                            <GetById />
+                        </PrivateRoute>
+                    }
+                />
+            </Routes>
+        </BrowserRouter>
     );
+}
+
+function PrivateRoute({ children }) {
+    const cookieAuth = Cookies.get("authentication");
+
+    if (cookieAuth) {
+        return children;
+    }
+    return <Navigate to="/login" replace={true} />;
+}
+
+function UnAthenticated({ children }) {
+    const cookieAuth = Cookies.get("authentication");
+    if (!cookieAuth) {
+        return children;
+    }
+    return <Navigate to="/" replace={true} />;
 }
 
 if (document.getElementById("root")) {

@@ -24,6 +24,7 @@ Route::controller(AuthenticationController::class)->prefix('auth')->group(functi
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['isAdmin'])->group(function () {
 
+        // Get All Users
         Route::get('user', function () {
             $users = User::all();
             return response()->json(['data' => $users, 'message' => 'Get data success', 'status' => 200], 200);
@@ -58,6 +59,27 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('{id}', 'destroy');
         });
         // End Kelas
+
+        Route::get('user/{username}/guru', function ($username) {
+            $user = User::where('username', $username)->first();
+            return response()->json([
+                'data' => [
+                    'name' => $user->name,
+                    'username' => $user->username,
+                    'email' => $user->email,
+                    'guru' => [
+                        'nip' => $user->guru->nip,
+                        'nama' => $user->guru->nama,
+                        'jenis_kelamin' => $user->guru->jenis_kelamin,
+                        'no_hp' => $user->guru->no_hp,
+                        'alamat' => $user->guru->alamat,
+                    ]
+                ],
+                'message' => 'Get data success',
+                'status' => 200
+            ], 200);
+        });
+        
     });
 
     // Start Siswa
@@ -70,19 +92,19 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
     // End Siswa
 
-    Route::get('user/{username}', function ($username) {
+    Route::get('user/{username}/siswa', function ($username) {
         $user = User::where('username', $username)->first();
         return response()->json([
             'data' => [
                 'name' => $user->name,
                 'username' => $user->username,
                 'email' => $user->email,
-                'guru' => [
-                    'nip' => $user->guru->nip,
-                    'nama' => $user->guru->nama,
-                    'jenis_kelamin' => $user->guru->jenis_kelamin,
-                    'no_hp' => $user->guru->no_hp,
-                    'alamat' => $user->guru->alamat,
+                'siswa' => [
+                    'nis' => $user->siswa->nip,
+                    'nama' => $user->siswa->nama,
+                    'jenis_kelamin' => $user->siswa->jenis_kelamin,
+                    'no_hp' => $user->siswa->no_hp,
+                    'alamat' => $user->siswa->alamat,
                 ]
             ],
             'message' => 'Get data success',
