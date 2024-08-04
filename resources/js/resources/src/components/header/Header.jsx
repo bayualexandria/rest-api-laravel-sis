@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import repositori from "../../utils/repositories";
+import repoimages from "../../utils/repoimages";
 
 function Header() {
     const [show, setShow] = useState(false);
@@ -55,7 +56,7 @@ function Header() {
                     const data = Cookies.get("authentication");
                     const auth = data.split(",");
 
-                    await fetch(`http://127.0.0.1:8000/api/logout`, {
+                    await fetch(`${repositori}logout`, {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
@@ -114,7 +115,7 @@ function Header() {
                         {dataUser ? (
                             <div className="w-9 h-9 rounded-full shadow-md  p-2 flex justify-center items-center border border-slate-200 overflow-hidden">
                                 <img
-                                    src={`http://127.0.0.1:8000/storage/${dataUser.image_profile}`}
+                                    src={repoimages + dataUser.image_profile}
                                     alt="profile"
                                     className="w-full"
                                 />

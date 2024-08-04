@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import repositori from "../../utils/repositories";
+import repoimages from "../../utils/repoimages";
 
 function Profile() {
     const [user, setUser] = useState([]);
@@ -109,7 +110,7 @@ function Profile() {
                             <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
                                 <div className="w-52 h-52 rounded-full shadow-md  p-2 flex justify-center items-center border border-slate-200 overflow-hidden">
                                     <img
-                                        src={`http://127.0.0.1:8000/storage/${user.image_profile}`}
+                                        src={repoimages + user.image_profile}
                                         alt="profile"
                                     />
                                 </div>
