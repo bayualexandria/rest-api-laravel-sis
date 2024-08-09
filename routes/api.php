@@ -79,7 +79,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 'status' => 200
             ], 200);
         });
-        
     });
 
     // Start Siswa
@@ -100,11 +99,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 'username' => $user->username,
                 'email' => $user->email,
                 'siswa' => [
-                    'nis' => $user->siswa->nip,
+                    'nis' => $user->siswa->nis,
                     'nama' => $user->siswa->nama,
                     'jenis_kelamin' => $user->siswa->jenis_kelamin,
                     'no_hp' => $user->siswa->no_hp,
                     'alamat' => $user->siswa->alamat,
+                    'image_profile' => $user->siswa->image_profile,
                 ]
             ],
             'message' => 'Get data success',
