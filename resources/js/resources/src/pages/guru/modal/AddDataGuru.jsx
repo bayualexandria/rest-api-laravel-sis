@@ -10,7 +10,7 @@ const customStyles = {
     content: {
         top: "50%",
         left: "50%",
-        right: "auto",
+        right: "20%",
         bottom: "-48%",
         transform: "translate(-50%, -50%)",
     },
@@ -72,7 +72,9 @@ function AddDataSiswa() {
     const saveGuru = async (e) => {
         e.preventDefault();
         const dataToken = Cookies.get("authentication");
+
         const token = dataToken.split(",");
+
         try {
             let response = await fetch(`${repositori}guru`, {
                 method: "POST",

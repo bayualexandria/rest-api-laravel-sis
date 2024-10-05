@@ -8,8 +8,12 @@ use App\Http\Controllers\API\{
     SiswaController
 };
 use App\Models\User;
+use App\Notifications\ForgetPassword;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 // Authentication verification email and reset password
 Route::controller(AuthenticationController::class)->prefix('auth')->group(function () {
@@ -19,6 +23,39 @@ Route::controller(AuthenticationController::class)->prefix('auth')->group(functi
     Route::post('login-admin', 'admin');
     Route::post('register', 'register');
     Route::get('verify/{email}', 'emailVerify');
+    Route::post('/forgot-password', function (Request $request) {
+        $validation = Validator::make($request->all(), [
+            'email' => 'email:tls|required',
+        ], [
+
+            'email.email' =>
+            'Yang anda masukan bukan email',
+            'email.required' =>
+            'Email harus diisi',
+
+        ]);
+        if ($validation->fails()) {
+            return response()->json(['message' => $validation->errors(), 'status' => 403], 403);
+        }
+
+        $user = User::where('email', $request->email)->first();
+        $forgetPass = DB::table('password_reset_tokens')->where('email', $request->email)->first();
+        $token = hash('sha256', Str::random(60));
+
+        if (!$user) {
+            return response()->json(['message' => "Email yang anda masukan belum terdaftar!", 'status' => 403], 403);
+        }
+
+        if (!$forgetPass) {
+            DB::table('password_reset_tokens')->insert(['email' => $request->email, 'token' => $token]);
+            $user->notify(new ForgetPassword($user, $token));
+            return response()->json(['message' => "Silahkan cek email anda untuk melakukan reset password", 'status' => 200], 200);
+        }
+        DB::table('password_reset_tokens')->where('email', $request->email)->update(['token' => $token]);
+        $user->notify(new ForgetPassword($user, $token));
+
+        return response()->json(['message' => "Silahkan cek email anda untuk melakukan reset password", 'status' => 200], 200);
+    });
 });
 
 

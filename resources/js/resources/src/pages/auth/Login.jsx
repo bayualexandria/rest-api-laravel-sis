@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import logo from "../../assets/images/logo-pendidikan.png";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import repositori from "../../utils/repositories";
 
@@ -238,6 +238,14 @@ function Login() {
                             )}
                         </button>
                     </form>
+                    <Link
+                        to="/forget-password"
+                        className="flex row justify-center w-full"
+                    >
+                        <div className="outline-none cursor-pointer text-sm font-thin text-sky-500">
+                            Lupa password?
+                        </div>
+                    </Link>
                 </div>
             </div>
         </>

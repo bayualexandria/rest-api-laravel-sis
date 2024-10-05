@@ -11,6 +11,7 @@ import Siswa from "./src/pages/siswa/Siswa";
 import GetById from "./src/pages/siswa/GetById";
 import UpdateDataGuru from "./src/pages/guru/UpdateDataGuru";
 import Mapel from "./src/pages/mapel/Mapel";
+import ForgetPassword from "./src/pages/auth/ForgetPassword";
 
 export default function Index() {
     return (
@@ -31,6 +32,15 @@ export default function Index() {
                     element={
                         <UnAthenticated>
                             <Register />
+                        </UnAthenticated>
+                    }
+                />
+
+                <Route
+                    path="/forget-password"
+                    element={
+                        <UnAthenticated>
+                            <ForgetPassword />
                         </UnAthenticated>
                     }
                 />
