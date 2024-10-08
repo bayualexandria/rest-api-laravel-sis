@@ -41,21 +41,37 @@ Route::controller(AuthenticationController::class)->prefix('auth')->group(functi
         $user = User::where('email', $request->email)->first();
         $forgetPass = DB::table('password_reset_tokens')->where('email', $request->email)->first();
         $token = hash('sha256', Str::random(60));
-
+        $password = Str::random(5);
         if (!$user) {
             return response()->json(['message' => "Email yang anda masukan belum terdaftar!", 'status' => 403], 403);
         }
 
         if (!$forgetPass) {
             DB::table('password_reset_tokens')->insert(['email' => $request->email, 'token' => $token]);
-            $user->notify(new ForgetPassword($user, $token));
-            return response()->json(['message' => "Silahkan cek email anda untuk melakukan reset password", 'status' => 200], 200);
+            $user->update(['password' => bcrypt($password)]);
+            $user->notify(new ForgetPassword($user, $token, $password));
+            return response()->json(['message' => "Anda berhasil melakukan reset password. Silahkan cek email anda untuk melihat pesan yang terkirim!", 'status' => 200], 200);
         }
-        DB::table('password_reset_tokens')->where('email', $request->email)->update(['token' => $token]);
-        $user->notify(new ForgetPassword($user, $token));
 
-        return response()->json(['message' => "Silahkan cek email anda untuk melakukan reset password", 'status' => 200], 200);
+        $user->update(['password' => bcrypt($password)]);
+        DB::table('password_reset_tokens')->where('email', $request->email)->update(['token' => $token]);
+        $user->notify(new ForgetPassword($user, $token, $password));
+
+        return response()->json(['message' => "Anda berhasil melakukan reset password. Silahkan cek email anda untuk melihat pesan yang terkirim!", 'status' => 200], 200);
     });
+
+    Route::get('reset/{email}/{token}', function ($email, $token) {
+        $dataToken = DB::table('password_reset_tokens')->where('email', $email)->first();
+        if ($dataToken->email != $email) {
+            return response()->json(['message' => 'Email anda tidak valid!', 'status' => 403], 403);
+        }
+        if ($token != $dataToken->token) {
+            return response()->json(['message' => 'Token anda tidak valid!', 'status' => 403], 403);
+        }
+        return response()->json(['email' => $email])->isRedirect("/reset-password");
+    });
+
+    // Route::post('reset-password/{email}', function ($mail) {});
 });
 
 

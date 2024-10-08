@@ -3,27 +3,59 @@ import Cookies from "js-cookie";
 import logo from "../../assets/images/logo-pendidikan.png";
 import { Link } from "react-router-dom";
 import repositori from "../../utils/repositories";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 function ForgetPassword() {
     const [user, setuser] = useState(false);
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState();
+    const [message, setMessage] = useState("");
 
     const data = { email };
 
     const forgetPassword = async (e) => {
         e.preventDefault();
         setLoading(true);
+        const templateModal = withReactContent(Swal).mixin({
+            customClass: {
+                confirmButton:
+                    "bg-sky-500 font-bold text-white outline-none border border-sky-500 rounded-md ml-2 px-2 py-0.5 cursor-pointer",
+                cancelButton:
+                    "bg-rose-500  font-bold text-white outline-none border border-rose-500 rounded-md mr-2 px-2 py-0.5 cursor-pointer",
+            },
+            buttonsStyling: false,
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            },
+        });
         try {
-            const responsen = await fetch(`${repositori}auth/forgot-password`, {
+            const response = await fetch(`${repositori}auth/forgot-password`, {
                 method: "POST",
                 body: JSON.stringify(data),
                 headers: {
                     "Content-Type": "application/json",
                 },
             }).then((res) => res.json());
+
+            if (response.status === 403) {
+                setMessage(response.message.email);
+                setTimeout(() => {
+                    setMessage("");
+                }, 5000);
+            }
             setLoading(false);
-            console.log(responsen);
+            await templateModal.fire({
+                icon: "success",
+                title: `${response.message}`,
+            });
+            console.log(response);
         } catch (e) {
             console.log(e.message);
         }
@@ -65,6 +97,13 @@ function ForgetPassword() {
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="border-sky-500 border  rounded-md shadow-md p-2 text-sm outline-none"
                             />
+                            {message ? (
+                                <p className="text-rose-500 font-thin text-xs">
+                                    {message}
+                                </p>
+                            ) : (
+                                ""
+                            )}
                         </div>
 
                         <button
@@ -95,11 +134,11 @@ function ForgetPassword() {
                         </button>
                     </form>
                     <Link
-                        to="/forget-password"
+                        to="/login"
                         className="flex row justify-center w-full"
                     >
                         <div className="outline-none cursor-pointer text-sm font-thin text-sky-500">
-                            Lupa password?
+                            Kembali ke halaman login?
                         </div>
                     </Link>
                 </div>

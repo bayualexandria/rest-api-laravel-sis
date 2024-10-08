@@ -7,20 +7,23 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\HtmlString;
 
 class ForgetPassword extends Notification
 {
     use Queueable;
     public $user;
     public $token;
+    public $password;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(User $user, $token)
+    public function __construct(User $user, $token, $password)
     {
         $this->user = $user;
         $this->token = $token;
+        $this->password = $password;
     }
 
     /**
@@ -41,8 +44,10 @@ class ForgetPassword extends Notification
         return (new MailMessage)
             ->subject('Forget Password | Sistem Informasi Siswa')
             ->line("Apa kabar, {$this->user->name}")
-            ->line("Silahkan klik tombol Reset password dibawah ini untuk melakukan mengubah password akunmu yang telah kamu daftarkan")
-            ->action('Reset password', url("/api/auth/reset/{$this->user->email}/{$this->token}"))
+            ->line("Anda berhasil menerima pesan ini untuk mengubah password, silahkan gunakan password dibawah ini untuk melakukan login akun!")
+            ->line("Username : {$this->user->username}")
+            ->line(new HtmlString("<center><strong><h3>Password</h3></strong></center>"))
+            ->line(new HtmlString("<center><h1><strong>{$this->password}</strong></h1></center>"))
             ->line('Terima Kasih!');
     }
 
