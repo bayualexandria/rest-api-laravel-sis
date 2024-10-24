@@ -5,7 +5,8 @@ use App\Http\Controllers\API\{
     GuruController,
     KelasController,
     MapelController,
-    SiswaController
+    SiswaController,
+    UserController
 };
 use App\Models\User;
 use App\Notifications\ForgetPassword;
@@ -41,7 +42,7 @@ Route::controller(AuthenticationController::class)->prefix('auth')->group(functi
         $user = User::where('email', $request->email)->first();
         $forgetPass = DB::table('password_reset_tokens')->where('email', $request->email)->first();
         $token = hash('sha256', Str::random(60));
-        $password = Str::random(5);
+        $password = Str::random(8);
         if (!$user) {
             return response()->json(['message' => "Email yang anda masukan belum terdaftar!", 'status' => 403], 403);
         }
@@ -188,5 +189,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         ], 200);
     });
 
+    Route::post('change-password/{username}', [UserController::class, 'changePassword']);
     Route::get('logout', [AuthenticationController::class, 'logout']);
 });

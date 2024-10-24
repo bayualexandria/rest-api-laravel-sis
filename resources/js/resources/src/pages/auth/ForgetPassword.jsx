@@ -60,6 +60,7 @@ function ForgetPassword() {
             console.log(e.message);
         }
     };
+    
     useEffect(() => {
         setuser(Cookies.get("authentication"));
     }, []);

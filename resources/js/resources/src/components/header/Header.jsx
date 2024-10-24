@@ -77,7 +77,7 @@ function Header() {
         <div className="container py-4">
             {user == null && <Navigate to="/login" replace={true} />}
 
-            <ul className="flex justify-end md:gap-56">
+            <ul className="flex justify-end md:gap-56 w-full">
                 <li className="flex items-center justify-between gap-x-4">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
