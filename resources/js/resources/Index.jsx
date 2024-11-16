@@ -12,6 +12,7 @@ import GetById from "./src/pages/siswa/GetById";
 import UpdateDataGuru from "./src/pages/guru/UpdateDataGuru";
 import Mapel from "./src/pages/mapel/Mapel";
 import ForgetPassword from "./src/pages/auth/ForgetPassword";
+import ChangePassword from "./src/pages/profile/ChangePassword";
 
 export default function Index() {
     return (
@@ -45,8 +46,6 @@ export default function Index() {
                     }
                 />
 
-                
-
                 <Route
                     path="/"
                     element={
@@ -55,6 +54,7 @@ export default function Index() {
                         </PrivateRoute>
                     }
                 />
+
                 <Route
                     path="/profile"
                     element={
@@ -63,6 +63,16 @@ export default function Index() {
                         </PrivateRoute>
                     }
                 />
+
+                <Route
+                    path="/change-password"
+                    element={
+                        <PrivateRoute>
+                            <ChangePassword />
+                        </PrivateRoute>
+                    }
+                />
+
                 <Route
                     path="/guru"
                     element={

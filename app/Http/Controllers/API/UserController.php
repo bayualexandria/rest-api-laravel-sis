@@ -32,7 +32,7 @@ class UserController extends Controller
             'confNewPassword.min' => 'Konfirmasi password minimal 8 karakter',
         ]);
 
-        if ($validation->fails()) return response()->json(['message' => $validation->errors(), 'status' => 403], 403);
+        if ($validation->fails()) return response()->json(['message' => $validation->errors(), 'status' => 401], 401);
 
         $user = $this->user->where('username', $username)->first();
 

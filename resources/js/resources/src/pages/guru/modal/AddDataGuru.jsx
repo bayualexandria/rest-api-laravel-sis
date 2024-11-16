@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import Cookies from "js-cookie";
-import axios from "axios";
 import repositori from "../../../utils/repositories";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
