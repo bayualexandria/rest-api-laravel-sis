@@ -1,8 +1,51 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Main from "../components/Main/Main";
 import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
+import repositori from "../utils/repositories";
 
 function Home() {
+    const [guru, setGuru] = useState("");
+    const [siswa, setSiswa] = useState("");
+    const data = Cookies.get("authentication");
+    const token = data.split(",");
+
+    const dataGuru = async () => {
+        try {
+            let response = await fetch(`${repositori}guru`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token[0],
+                },
+            }).then((res) => res.json());
+
+            setGuru(response.data.length);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const dataSiswa = async () => {
+        try {
+            let response = await fetch(`${repositori}siswa`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token[0],
+                },
+            }).then((res) => res.json());
+            setSiswa(response.data.length);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        dataGuru();
+        dataSiswa();
+    }, []);
+
     return (
         <Main>
             <div className="grid grid-cols-6 bg-slate-100">
@@ -39,7 +82,7 @@ function Home() {
                                 </div>
                                 <div className="flex justify-center pt-1">
                                     <p className="text-xl font-bold text-slate-500 group-hover:text-white">
-                                        10
+                                        {guru}
                                     </p>
                                 </div>
                             </Link>
@@ -64,7 +107,7 @@ function Home() {
                                 </div>
                                 <div className="flex justify-center pt-1">
                                     <p className="text-xl font-bold text-slate-500 group-hover:text-white">
-                                        30
+                                        {siswa}
                                     </p>
                                 </div>
                             </Link>
