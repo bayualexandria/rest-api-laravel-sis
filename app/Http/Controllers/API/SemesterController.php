@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Semester;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class SemesterController extends Controller
 {
@@ -32,7 +33,24 @@ class SemesterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validation = Validator::make($request->all(), [
+            'semester' => "required",
+            'tahun_pelajaran' => "required"
+        ], [
+            'semester.required' => "Semester harus diisi",
+            "tahun_pelajaran.required" => "Tahun pelajaran harus diisi"
+        ]);
+
+        if ($validation->fails()) {
+            return response()->json(['message' => $validation->errors(), 'status' => 403], 403);
+        }
+
+        $this->semester->create([
+            'semester' => $request->semester,
+            'tahun_pelajaran' => $request->tahun_pelajaran
+        ]);
+
+        return response()->json(['message' => 'Data semester berhasil ditambahkan!', 'status' => 200], 200);
     }
 
     /**

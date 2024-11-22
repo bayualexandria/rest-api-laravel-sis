@@ -5,6 +5,7 @@ use App\Http\Controllers\API\{
     GuruController,
     KelasController,
     MapelController,
+    SemesterController,
     SiswaController,
     UserController
 };
@@ -130,6 +131,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         });
         // End Kelas
 
+        // Start User guru by id
         Route::get('user/{username}/guru', function ($username) {
             $user = User::where('username', $username)->first();
             return response()->json([
@@ -151,6 +153,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 'status' => 200
             ], 200);
         });
+        // End User guru by id
+
+        // Start Semester
+        Route::controller(SemesterController::class)->prefix('semester')->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+        });
+        // End Semester
     });
 
     // Start Siswa
@@ -168,6 +178,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
     // End Siswa
 
+    // Start User siswa by id
     Route::get('user/{username}/siswa', function ($username) {
         $user = User::where('username', $username)->first();
         return response()->json([
@@ -188,6 +199,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             'status' => 200
         ], 200);
     });
+    // End User siswa by id
 
     Route::post('change-password/{username}', [UserController::class, 'changePassword']);
     Route::get('logout', [AuthenticationController::class, 'logout']);

@@ -3,12 +3,18 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Kelas;
 use Illuminate\Support\Facades\DB;
 
 class KelasController extends Controller
 {
 
+    protected $kelas;
+
+    function __construct()
+    {
+        $this->kelas = new Kelas();
+    }
 
     public function index()
     {
@@ -25,5 +31,9 @@ class KelasController extends Controller
             'message' => 'Data kelas berhasil ditampilkan',
             'status' => 200
         ], 200);
+    }
+
+    public function insert() {
+        
     }
 }

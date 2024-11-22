@@ -25,7 +25,10 @@ function Header() {
                 method: "GET",
             }).then((res) => res.json());
             setDataUser(response.data);
-        } catch (error) {}
+           
+        } catch (error) {
+            console.log("hasil" + error);
+        }
     };
 
     useEffect(() => {
