@@ -16,6 +16,10 @@
         "vite": "^5.0"
     },
     "dependencies": {
+        "@emotion/react": "^11.13.5",
+        "@emotion/styled": "^11.13.5",
+        "@mui/material": "^6.1.8",
+        "@mui/x-charts": "^7.22.3",
         "file-saver": "^2.0.5",
         "js-cookie": "^3.0.5",
         "react-data-table-component": "^7.6.2",

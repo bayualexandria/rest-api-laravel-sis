@@ -13,12 +13,14 @@ import UpdateDataGuru from "./src/pages/guru/UpdateDataGuru";
 import Mapel from "./src/pages/mapel/Mapel";
 import ForgetPassword from "./src/pages/auth/ForgetPassword";
 import ChangePassword from "./src/pages/profile/ChangePassword";
+import Kelas from "./src/pages/kelas/Kelas";
 
 export default function Index() {
     return (
         <BrowserRouter>
             <Routes>
                 {/* Start UnAuthorization */}
+                {/* Login */}
                 <Route
                     path="/login"
                     element={
@@ -27,7 +29,7 @@ export default function Index() {
                         </UnAthenticated>
                     }
                 />
-
+                {/* Register */}
                 <Route
                     path="/register"
                     element={
@@ -36,7 +38,7 @@ export default function Index() {
                         </UnAthenticated>
                     }
                 />
-
+                {/* Forget password */}
                 <Route
                     path="/forget-password"
                     element={
@@ -45,7 +47,10 @@ export default function Index() {
                         </UnAthenticated>
                     }
                 />
+                {/* End UnAuthorization */}
 
+                {/* Start Authorization */}
+                {/* Main root */}
                 <Route
                     path="/"
                     element={
@@ -54,7 +59,7 @@ export default function Index() {
                         </PrivateRoute>
                     }
                 />
-
+                {/* Profile */}
                 <Route
                     path="/profile"
                     element={
@@ -63,7 +68,7 @@ export default function Index() {
                         </PrivateRoute>
                     }
                 />
-
+                {/* Change password */}
                 <Route
                     path="/change-password"
                     element={
@@ -72,7 +77,7 @@ export default function Index() {
                         </PrivateRoute>
                     }
                 />
-
+                {/* Guru */}
                 <Route
                     path="/guru"
                     element={
@@ -81,6 +86,7 @@ export default function Index() {
                         </PrivateRoute>
                     }
                 />
+                {/* Update guru by id */}
                 <Route
                     path="/guru/:nip"
                     element={
@@ -89,6 +95,7 @@ export default function Index() {
                         </PrivateRoute>
                     }
                 />
+                {/* Siswa */}
                 <Route
                     path="/siswa"
                     element={
@@ -97,6 +104,7 @@ export default function Index() {
                         </PrivateRoute>
                     }
                 />
+                {/* Update data siswa */}
                 <Route
                     path="/siswa/:nis"
                     element={
@@ -105,6 +113,7 @@ export default function Index() {
                         </PrivateRoute>
                     }
                 />
+                {/* Mapel */}
                 <Route
                     path="/mapel"
                     element={
@@ -113,6 +122,16 @@ export default function Index() {
                         </PrivateRoute>
                     }
                 />
+                {/* Kelas */}
+                <Route
+                    path="/kelas"
+                    element={
+                        <PrivateRoute>
+                            <Kelas />
+                        </PrivateRoute>
+                    }
+                />
+                {/* End Authorization */}
             </Routes>
         </BrowserRouter>
     );

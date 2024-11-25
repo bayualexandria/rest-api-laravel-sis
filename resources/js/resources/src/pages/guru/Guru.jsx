@@ -8,6 +8,7 @@ import repositori from "../../utils/repositories";
 import AddDataGuru from "./modal/AddDataGuru";
 import DeleteGuruById from "./DeleteGuruById";
 import ShowDataTrashGuru from "./trash-data/ShowDataTrashGuru";
+import ExcelExport from "../../components/laporan/excel/ExcelExport";
 
 function Guru() {
     const [guru, setGuru] = useState([]);
@@ -109,7 +110,7 @@ function Guru() {
         });
         setFilter(result);
     }, [search]);
-    const exportExcel = () => {};
+   
 
     return (
         <Main>
@@ -164,26 +165,10 @@ function Guru() {
                                             </div>
                                             <div className="flex flex-row gap-x-3">
                                                 <AddDataGuru />
-                                                <div
-                                                    className="rounded-md p-1 flex flex-row justify-center items-center font-bold border border-lime-500 text-sm gap-x-1 hover:bg-white hover:text-lime-500 cursor-pointer bg-lime-500 text-white transition duration-200"
-                                                    onClick={exportExcel}
-                                                >
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        fill="none"
-                                                        viewBox="0 0 24 24"
-                                                        strokeWidth="1.5"
-                                                        stroke="currentColor"
-                                                        className="w-5 h-5"
-                                                    >
-                                                        <path
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
-                                                        />
-                                                    </svg>
-                                                    <p>Excel</p>
-                                                </div>
+                                                <ExcelExport
+                                                    data={guru}
+                                                    fileName="Data Guru"
+                                                />
                                                 <ShowDataTrashGuru />
                                             </div>
                                         </div>

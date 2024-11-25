@@ -196,7 +196,7 @@ function Sidebar() {
                         </Link>
                     </li>
                     <li className="flex justify-center md:justify-between">
-                        <Link className="flex items-center gap-3">
+                        <Link to="/kelas" className="flex items-center gap-3">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className="w-5 h-5"
