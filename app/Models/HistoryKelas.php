@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class HistoryKelas extends Model
 {
     use HasFactory;
-    use SoftDeletes;
+
     protected $table = 'history_kelas';
     protected $fillable = [
         'kelas_id',
@@ -17,8 +17,5 @@ class HistoryKelas extends Model
         'semester_id'
     ];
 
-    function kelas()
-    {
-        $this->hasMany(Kelas::class);
-    }
+    
 }

@@ -41,9 +41,8 @@ class SemesterController extends Controller
             "tahun_pelajaran.required" => "Tahun pelajaran harus diisi"
         ]);
 
-        if ($validation->fails()) {
-            return response()->json(['message' => $validation->errors(), 'status' => 403], 403);
-        }
+        if ($validation->fails()) return response()->json(['message' => $validation->errors(), 'status' => 403], 403);
+
 
         $this->semester->create([
             'semester' => $request->semester,
@@ -66,14 +65,33 @@ class SemesterController extends Controller
      */
     public function update(Request $request, Semester $semester)
     {
-        //
+        $validation = Validator::make($request->all(), [
+            'semester' => "required",
+            'tahun_pelajaran' => "required"
+        ], [
+            'semester.required' => "Semester harus diisi",
+            "tahun_pelajaran.required" => "Tahun pelajaran harus diisi"
+        ]);
+
+        if ($validation->fails()) return response()->json(['message' => $validation->errors(), 'status' => 403], 403);
+
+
+        $semester = $this->semester->where('id', $semester)->first();
+        $semester->update([
+            'semester' => $request->semester,
+            'tahun_pelajaran' => $request->tahun_pelajaran
+        ]);
+
+        return response()->json(['message' => 'Data semester berhasil diperbaharui!', 'status' => 200], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Semester $semester)
+    public function destroy(String $semester)
     {
-        //
+        $data = $this->semester->where('id', $semester)->first();
+        $data->delete();
+        return response()->json(['data' => $semester, 'message' => 'Data semester berhasil ditambahkan!', 'status' => 200], 200);
     }
 }

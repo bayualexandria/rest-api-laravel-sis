@@ -110,7 +110,6 @@ function Guru() {
         });
         setFilter(result);
     }, [search]);
-   
 
     return (
         <Main>
