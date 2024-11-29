@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Guru;
 use App\Models\User;
+use App\Notifications\ChangedEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -125,6 +126,7 @@ class GuruController extends Controller
         //     return response()->json(['message' => $validation->errors(), 'status' => 403], 403);
         // }
         $guru = Guru::where('nip', $nip)->first();
+        $user = User::where('username', $nip)->first();
         if ($request->file('image_profile')) {
             if (!$guru->image_profile) {
 
@@ -138,6 +140,10 @@ class GuruController extends Controller
 
             $image = $request->file('image_profile');
             $image->storeAs('public/assets/images/guru/' . $nip . '/', $image->hashName());
+        }
+
+        if ($request->email === $user->email) {
+            return response()->json(['message' => 'Email yang anda masukan sudah terdaftar!', 'status' => 403], 403);
         }
 
         $data = [
@@ -156,9 +162,23 @@ class GuruController extends Controller
                 ? $request->alamat
                 : $guru->alamat
         ];
-
+        $dataUser = [
+            'username' => $nip,
+            'email' => $request->email ? $request->email : $user->email,
+            'name' => $request->nama
+                ? $request->nama
+                : $user->name,
+            'password' => $request->email ? bcrypt($nip) : $user->password,
+            'status_id' => 2
+        ];
         $dataGuru = $guru->update($data);
+        if ($request->email) {
 
+            $dataUser = $user->update($dataUser);
+            $dataUser->notify(new ChangedEmail($dataUser));
+            return response()->json(['data' => $data, 'process' => $dataGuru, 'message' => 'Data berhasil diubah! Silahkan cek email anda untuk melihat hasil perubahan.', 'status' => 200], 200);
+        }
+        $user->update($dataUser);
         return response()->json(['data' => $data, 'process' => $dataGuru, 'message' => 'Data berhasil diubah', 'status' => 200], 200);
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\{Guru, User, Siswa};
 use App\Notifications\EmailVerification;
+use App\Notifications\VerificationEmailSuccess;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -173,8 +174,10 @@ class AuthenticationController extends Controller
     }
     public function emailVerify($email)
     {
-        $user = User::where('email', $email)->update(['email_verified_at' => date('Y-m-d h:m:t')]);
+        $user = User::where('email', $email)->first();
+        $verify = $user->update(['email_verified_at' => date('Y-m-d h:m:t')]);
+        $user->notify(new VerificationEmailSuccess($user));
 
-        return response()->json(['data' => $user, 'message' => 'Akun berhasil terverifikasi!', 'status' => 200, 'date' => date('Y-m-d h:m:t')], 200);
+        return response()->json(['data' => $verify, 'message' => 'Akun berhasil terverifikasi!', 'status' => 200, 'date' => date('Y-m-d h:m:t')], 200);
     }
 }

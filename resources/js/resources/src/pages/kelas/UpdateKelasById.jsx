@@ -90,7 +90,7 @@ function UpdateKelasById({ id }) {
         } catch (error) {}
     };
 
-    const dataKelas = async () => {
+    const dataKelasHistory = async () => {
         try {
             let response = await fetch(`${repositori}kelas/${id}`, {
                 method: "GET",
@@ -109,11 +109,53 @@ function UpdateKelasById({ id }) {
         } catch (error) {}
     };
 
+    // update data kelas
+    const [kelasID, setKelasID] = useState("");
+    const [waliKelas, setWaliKelas] = useState("");
+    const [semesterID, setSemesterID] = useState("");
+    const dataKelas = {
+        kelas_id: kelasID,
+        wali_kelas: waliKelas,
+        semester_id: semesterID,
+    };
+    const updateDataKelas = async (e) => {
+        setLoading(true);
+        e.preventDefault();
+
+        try {
+            let response = await fetch(`${repositori}kelas/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token[0],
+                },
+                body: JSON.stringify(dataKelas),
+            }).then((res) => res.json());
+            if (response.status === 403) {
+                setTimeout(() => {
+                    setLoading(false);
+                    setError(response.message);
+                }, 1000);
+            }
+            if (response.status === 200) {
+                setTimeout(async () => {
+                    setLoading(false);
+                    handleClose();
+                    await templateModalSuccess.fire({
+                        icon: "success",
+                        title: response.message,
+                    });
+                    setTimeout(() => (window.location.href = "/kelas"), 1000);
+                }, 1000);
+            }
+        } catch (error) {}
+    };
+
     useEffect(() => {
         getDataKelas();
         getDataGuru();
         getDataSemester();
-        dataKelas();
+        dataKelasHistory();
     }, []);
 
     return (
@@ -163,24 +205,45 @@ function UpdateKelasById({ id }) {
                             </button>
                         </div>
                         <div className="flex flex-col w-full p-3">
-                            <form className="flex flex-col gap-y-5">
+                            <form
+                                className="flex flex-col gap-y-5"
+                                onSubmit={updateDataKelas}
+                            >
                                 <div className="flex flex-col gap-y-2">
                                     <label
                                         htmlFor="kelas_id"
                                         className="font-bold text-base text-slate-500"
                                     >
-                                        Kelas {getKelas.kelas_id}
+                                        Kelas
                                     </label>
                                     <select
                                         name="kelas_id"
                                         id="kelas_id"
-                                        defaultValue={getKelas.kelas_id}
                                         className="border border-sky-500 rounded-md shadow-md outline-none py-1 px-2"
+                                        value={getKelas.kelas_id}
+                                        onChange={(e) =>
+                                            setKelasID(e.target.value)
+                                        }
                                     >
                                         <option value="">
                                             --Pilih Kelas--
                                         </option>
                                         {kelas.map((data) => {
+                                            if (getKelas.kelas_id === data.id) {
+                                                return (
+                                                    <option
+                                                        value={
+                                                            getKelas.kelas_id
+                                                        }
+                                                        key={getKelas.kelas_id}
+                                                        selected
+                                                    >
+                                                        {data.nama_kelas}
+                                                        {" | "}
+                                                        {data.jurusan}
+                                                    </option>
+                                                );
+                                            }
                                             return (
                                                 <option
                                                     value={data.id}
@@ -193,6 +256,13 @@ function UpdateKelasById({ id }) {
                                             );
                                         })}
                                     </select>
+                                    {error.kelas_id ? (
+                                        <p className="text-xs font-thin text-rose-500">
+                                            {error.kelas_id}
+                                        </p>
+                                    ) : (
+                                        ""
+                                    )}
                                 </div>
                                 <div className="flex flex-col gap-y-2">
                                     <label
@@ -205,6 +275,7 @@ function UpdateKelasById({ id }) {
                                         name="wali_kelas"
                                         id="wali_kelas"
                                         className="border border-sky-500 rounded-md shadow-md outline-none py-1 px-2"
+                                        defaultValue={getKelas.wali_kelas}
                                         onChange={(e) =>
                                             setWaliKelas(e.target.value)
                                         }
@@ -213,6 +284,23 @@ function UpdateKelasById({ id }) {
                                             --Pilih Wali Kelas--
                                         </option>
                                         {guru.map((data) => {
+                                            if (
+                                                getKelas.wali_kelas === data.id
+                                            ) {
+                                                return (
+                                                    <option
+                                                        value={
+                                                            getKelas.wali_kelas
+                                                        }
+                                                        key={
+                                                            getKelas.wali_kelas
+                                                        }
+                                                        selected
+                                                    >
+                                                        {data.nama}
+                                                    </option>
+                                                );
+                                            }
                                             return (
                                                 <option
                                                     value={data.id}
@@ -223,6 +311,13 @@ function UpdateKelasById({ id }) {
                                             );
                                         })}
                                     </select>
+                                    {error.wali_kelas ? (
+                                        <p className="text-xs font-thin text-rose-500">
+                                            {error.wali_kelas}
+                                        </p>
+                                    ) : (
+                                        ""
+                                    )}
                                 </div>
 
                                 <div className="flex flex-col gap-y-2">
@@ -236,6 +331,7 @@ function UpdateKelasById({ id }) {
                                         name="semester_id"
                                         id="semester_id"
                                         className="border border-sky-500 rounded-md shadow-md outline-none py-1 px-2"
+                                        defaultValue={getKelas.semester_id}
                                         onChange={(e) =>
                                             setSemesterID(e.target.value)
                                         }
@@ -244,6 +340,28 @@ function UpdateKelasById({ id }) {
                                             --Pilih Semester--
                                         </option>
                                         {semester.map((data) => {
+                                            if (
+                                                getKelas.semester_id === data.id
+                                            ) {
+                                                return (
+                                                    <option
+                                                        value={
+                                                            getKelas.semester_id
+                                                        }
+                                                        key={
+                                                            getKelas.semester_id
+                                                        }
+                                                        selected
+                                                    >
+                                                        Semester{" "}
+                                                        {data.semester == "II"
+                                                            ? "Ganap"
+                                                            : "Ganjil"}
+                                                        {"-"}
+                                                        {data.tahun_pelajaran}
+                                                    </option>
+                                                );
+                                            }
                                             return (
                                                 <option
                                                     value={data.id}
@@ -259,6 +377,13 @@ function UpdateKelasById({ id }) {
                                             );
                                         })}
                                     </select>
+                                    {error.semester_id ? (
+                                        <p className="text-xs font-thin text-rose-500">
+                                            {error.semester_id}
+                                        </p>
+                                    ) : (
+                                        ""
+                                    )}
                                 </div>
                                 <div className="flex flex-row justify-end w-full pt-3">
                                     <button
@@ -284,7 +409,7 @@ function UpdateKelasById({ id }) {
                                                 Loading...
                                             </div>
                                         ) : (
-                                            "Simpan"
+                                            "Ubah data"
                                         )}
                                     </button>
                                 </div>

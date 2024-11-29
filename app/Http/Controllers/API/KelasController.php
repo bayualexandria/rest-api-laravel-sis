@@ -88,7 +88,11 @@ class KelasController extends Controller
             return response()->json(['message' => $validation->errors(), 'status' => 403], 403);
         }
         $data = $this->historyKelas->where('id', $kelas)->first();
-        $data->update($request->all());
+        $data->update([
+            'kelas_id' => $request->kelas_id,
+            'wali_kelas' => $request->wali_kelas,
+            'semester_id' => $request->semester_id
+        ]);
 
         return response()->json(['message' => 'Data kelas berhasil diperbaharui!', 'status' => 200], 200);
     }

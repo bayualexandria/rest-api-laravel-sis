@@ -23,7 +23,7 @@ class UserAdmin extends Seeder
         ]);
         User::factory()->create([
             'name' => "Bayu Wardana",
-            'email' => "wardanabayu508@gmail.com",
+            'email' => "wardanabayu503@gmail.com",
             'username' => "9106012508950002",
             'password' => bcrypt("Wardana13@"),
             'status_id' => 2,
