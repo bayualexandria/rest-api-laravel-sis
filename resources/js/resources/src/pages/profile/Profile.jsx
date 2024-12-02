@@ -173,33 +173,70 @@ function Profile() {
                                         </label>
                                         <div className="flex flex-row gap-x-5">
                                             <div className="flex flex-row gap-x-3">
-                                                <input
-                                                    type="radio"
-                                                    name="jenis_kelamin"
-                                                    onChange={(e) =>
-                                                        setJenisKelamin(
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    value="Laki-laki"
-                                                    className="border border-sky-500"
-                                                />
+                                                {user.jenis_kelamin == "Laki-laki" ? (
+                                                    <input
+                                                        type="radio"
+                                                        name="jenis_kelamin"
+                                                        value="Laki-laki"
+                                                        id="Laki-laki"
+                                                        className="border border-sky-500"
+                                                        onChange={(e) =>
+                                                            setJenisKelamin(
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        checked
+                                                    />
+                                                ) : (
+                                                    <input
+                                                        type="radio"
+                                                        name="jenis_kelamin"
+                                                        value="Laki-laki"
+                                                        id="Laki-laki"
+                                                        className="border border-sky-500"
+                                                        onChange={(e) =>
+                                                            setJenisKelamin(
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                    />
+                                                )}
                                                 <label htmlFor="Laki-laki">
                                                     Laki-laki
                                                 </label>
                                             </div>
                                             <div className="flex flex-row gap-x-3">
-                                                <input
-                                                    type="radio"
-                                                    name="jenis_kelamin"
-                                                    className="border border-sky-500"
-                                                    onChange={(e) =>
-                                                        setJenisKelamin(
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                    value="Perempuan"
-                                                />
+                                                {user.jenis_kelamin ==
+                                                "Perempuan" ? (
+                                                    <input
+                                                        type="radio"
+                                                        name="jenis_kelamin"
+                                                        className="border border-sky-500"
+                                                        value="Perempuan"
+                                                        id="Perempuan"
+                                                        onChange={(e) =>
+                                                            setJenisKelamin(
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                       
+                                                        checked
+                                                    />
+                                                ) : (
+                                                    <input
+                                                        type="radio"
+                                                        name="jenis_kelamin"
+                                                        className="border border-sky-500"
+                                                        value="Perempuan"
+                                                        id="Perempuan"
+                                                        onChange={(e) =>
+                                                            setJenisKelamin(
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        
+                                                    />
+                                                )}
                                                 <label htmlFor="Perempuan">
                                                     Perempuan
                                                 </label>

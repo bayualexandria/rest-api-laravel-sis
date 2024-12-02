@@ -115,18 +115,21 @@ class GuruController extends Controller
      */
     public function update(Request $request, string $nip)
     {
-        // $validation = Validator::make($request->all(), [
-        //     'image_profile' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        // ], [
-        //     'image_profile.image' => 'Yang anda masukan bukan foto',
-        //     'image_profile.mimes' => 'Format yang anda masukan bukan foto (jpeg,png,jg,gif)',
-        //     'image_profile.max' => 'Maksimal kapasitas foto 2MB',
-        // ]);
-        // if ($validation->fails()) {
-        //     return response()->json(['message' => $validation->errors(), 'status' => 403], 403);
-        // }
+        $validation = Validator::make($request->all(), [
+            'image_profile' => 'mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            
+            'image_profile.mimes' => 'Format yang anda masukan bukan foto (jpeg,png,jg,gif)',
+            'image_profile.max' => 'Maksimal kapasitas foto 2MB',
+        ]);
+        if ($validation->fails()) {
+            return response()->json(['message' => $validation->errors(), 'status' => 403], 403);
+        }
         $guru = Guru::where('nip', $nip)->first();
         $user = User::where('username', $nip)->first();
+        if ($request->email == $user->email) {
+            return response()->json(['message' => 'Email yang anda masukan sudah terdaftar!', 'status' => 403], 403);
+        }
         if ($request->file('image_profile')) {
             if (!$guru->image_profile) {
 
@@ -142,9 +145,7 @@ class GuruController extends Controller
             $image->storeAs('public/assets/images/guru/' . $nip . '/', $image->hashName());
         }
 
-        if ($request->email === $user->email) {
-            return response()->json(['message' => 'Email yang anda masukan sudah terdaftar!', 'status' => 403], 403);
-        }
+
 
         $data = [
             'nip' => $nip,
@@ -174,8 +175,8 @@ class GuruController extends Controller
         $dataGuru = $guru->update($data);
         if ($request->email) {
 
-            $dataUser = $user->update($dataUser);
-            $dataUser->notify(new ChangedEmail($dataUser));
+            $user->update($dataUser);
+            $user->notify(new ChangedEmail($user));
             return response()->json(['data' => $data, 'process' => $dataGuru, 'message' => 'Data berhasil diubah! Silahkan cek email anda untuk melihat hasil perubahan.', 'status' => 200], 200);
         }
         $user->update($dataUser);

@@ -46,7 +46,7 @@ function Sidebar() {
                     <li className="flex justify-center w-full md:justify-between">
                         <Link
                             to="/"
-                            className="flex items-center gap-3 hover:text-slate-300"
+                            className="flex items-center gap-3 hover:text-slate-300 outline-none"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -150,7 +150,7 @@ function Sidebar() {
                                 </svg>
                                 <p className="hidden md:block text-sm">Siswa</p>
                             </div>
-                            <button className="transition duration-300 ease-in-out bg-transparent">
+                            <button className="transition duration-300 ease-in-out bg-transparent outline-none">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="w-4 h-4 transition duration-300"
@@ -177,7 +177,7 @@ function Sidebar() {
                         </ul>
                     </li>
                     <li className="flex justify-center md:justify-between">
-                        <Link className="flex items-center gap-3">
+                        <Link className="flex items-center gap-3 outline-none">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -196,7 +196,10 @@ function Sidebar() {
                         </Link>
                     </li>
                     <li className="flex justify-center md:justify-between">
-                        <Link to="/kelas" className="flex items-center gap-3">
+                        <Link
+                            to="/kelas"
+                            className="flex items-center gap-3 outline-none"
+                        >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className="w-5 h-5"
@@ -236,7 +239,7 @@ function Sidebar() {
                         </div>
                     </li>
                     <li className="flex justify-center md:justify-between">
-                        <Link className="flex items-center gap-3 cursor-pointer hover:text-slate-300">
+                        <Link className="flex items-center gap-3 cursor-pointer hover:text-slate-300 outline-none">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -260,7 +263,7 @@ function Sidebar() {
                         <li className="flex justify-center md:justify-between">
                             <Link
                                 to="/profile"
-                                className="flex items-center gap-3 hover:text-slate-300"
+                                className="flex items-center gap-3 hover:text-slate-300 outline-none"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"

@@ -14,15 +14,17 @@ function UpdateDataGuru() {
     const [imagePreview, setImagePreview] = useState();
     const [loading, setLoading] = useState(false);
     const [nama, setNama] = useState("");
+    const [email, setEmail] = useState("");
     const [jenisKelamin, setJenisKelamin] = useState("");
     const [noHP, setNoHP] = useState("");
     const [alamat, setAlamat] = useState("");
     const [image, setImage] = useState("");
+    const [error, setError] = useState("");
+    const [user, setUser] = useState("");
+    const dataToken = Cookies.get("authentication");
+    const token = dataToken.split(",");
 
     const getDataGuruById = async () => {
-        const dataToken = Cookies.get("authentication");
-        const token = dataToken.split(",");
-
         try {
             let response = await axios
                 .get(`${repositori}guru/${nip}`, {
@@ -38,6 +40,20 @@ function UpdateDataGuru() {
         } catch (e) {
             console.log(e.message);
         }
+    };
+
+    const getUserById = async () => {
+        try {
+            let response = await axios
+                .get(`${repositori}user/${nip}`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Bearer " + token[0],
+                    },
+                })
+                .then((res) => res.data);
+            setUser(response.data);
+        } catch (error) {}
     };
 
     const updateData = async (e) => {
@@ -61,36 +77,43 @@ function UpdateDataGuru() {
                 toast.onmouseleave = Swal.resumeTimer;
             },
         });
-        setTimeout(async () => {
-            setLoading(false);
-            await templateModal.fire({
-                icon: "success",
-                title: "Data berhasil diubah",
-            });
 
-            const dataToken = Cookies.get("authentication");
-            const token = dataToken.split(",");
-            const data = new FormData();
-            data.append("nama", nama);
-            data.append("jenis_kelamin", jenisKelamin);
-            data.append("no_hp", noHP);
-            data.append("alamat", alamat);
-            data.append("image_profile", image);
+        const dataToken = Cookies.get("authentication");
+        const token = dataToken.split(",");
+        const data = new FormData();
+        data.append("nama", nama);
+        data.append("jenis_kelamin", jenisKelamin);
+        data.append("no_hp", noHP);
+        data.append("alamat", alamat);
+        data.append("email", email);
+        data.append("image_profile", image);
 
-            try {
-                let response = await axios
-                    .post(`${repositori}guru/${nip}`, data, {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                            Authorization: "Bearer " + token[0],
-                        },
-                    })
-                    .then((res) => res.data);
-                return (window.location.href = "/guru");
-            } catch (error) {
-                console.log(error.message);
+        try {
+            let response = await axios
+                .post(`${repositori}guru/${nip}`, data, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: "Bearer " + token[0],
+                    },
+                })
+                .then((res) => res.data);
+            console.log(response);
+
+            if (response.status === 200) {
+                setLoading(false);
+                await templateModal.fire({
+                    icon: "success",
+                    title: "Data berhasil diubah",
+                });
+                setTimeout(async () => {
+                    return (window.location.href = "/guru");
+                }, 5000);
             }
-        }, 5000);
+        } catch (error) {
+            setLoading(false);
+            setError(error.response.data.message);
+            console.log("erorrs", error.response.data.message);
+        }
     };
 
     const onImageUpload = (e) => {
@@ -101,6 +124,7 @@ function UpdateDataGuru() {
 
     useEffect(() => {
         getDataGuruById();
+        getUserById();
     }, []);
 
     return (
@@ -158,6 +182,32 @@ function UpdateDataGuru() {
                                     <div className="flex flex-col md:flex-row md:gap-x-5 gap-y-5 w-full">
                                         <div className="flex flex-col gap-y-2 w-full md:w-1/2">
                                             <label
+                                                htmlFor="nama"
+                                                className="font-bold text-sm text-slate-500"
+                                            >
+                                                Email
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="nama"
+                                                id="nama"
+                                                className="rounded-md shadow-md px-2 py-1 border border-sky-500 outline-none"
+                                                defaultValue={user.email}
+                                                onChange={(e) =>
+                                                    setEmail(e.target.value)
+                                                }
+                                            />
+                                            {error ===
+                                            "Email yang anda masukan sudah terdaftar!" ? (
+                                                <p className="text-xs text-rose-500 font-thin">
+                                                    {error}
+                                                </p>
+                                            ) : (
+                                                ""
+                                            )}
+                                        </div>
+                                        <div className="flex flex-col gap-y-2 w-full md:w-1/2">
+                                            <label
                                                 htmlFor="jenis_kelamin"
                                                 className="text-sm font-bold text-slate-500"
                                             >
@@ -165,94 +215,143 @@ function UpdateDataGuru() {
                                             </label>
                                             <div className="flex flex-row gap-x-5">
                                                 <div className="flex flex-row gap-x-3">
-                                                    <input
-                                                        type="radio"
-                                                        name="jenis_kelamin"
-                                                        value="Laki-laki"
-                                                        className="border border-sky-500"
-                                                        onChange={(e) =>
-                                                            setJenisKelamin(
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                        defaultChecked={
-                                                            guru.jenis_kelamin ===
-                                                            "Laki-laki"
-                                                        }
-                                                    />
+                                                    {guru.jenis_kelamin ==
+                                                    "Laki-laki" ? (
+                                                        <input
+                                                            type="radio"
+                                                            name="jenis_kelamin"
+                                                            value="Laki-laki"
+                                                            id="Laki-laki"
+                                                            className="border border-sky-500"
+                                                            onChange={(e) =>
+                                                                setJenisKelamin(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            }
+                                                            checked
+                                                        />
+                                                    ) : (
+                                                        <input
+                                                            type="radio"
+                                                            name="jenis_kelamin"
+                                                            value="Laki-laki"
+                                                            id="Laki-laki"
+                                                            className="border border-sky-500"
+                                                            onChange={(e) =>
+                                                                setJenisKelamin(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            }
+                                                        />
+                                                    )}
+
                                                     <label htmlFor="Laki-laki">
                                                         Laki-laki
                                                     </label>
                                                 </div>
                                                 <div className="flex flex-row gap-x-3">
-                                                    <input
-                                                        type="radio"
-                                                        name="jenis_kelamin"
-                                                        className="border border-sky-500"
-                                                        value="Perempuan"
-                                                        onChange={(e) =>
-                                                            setJenisKelamin(
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                        defaultChecked={
-                                                            guru.jenis_kelamin ===
-                                                            "Perempuan"
-                                                        }
-                                                    />
+                                                    {guru.jenis_kelamin ==
+                                                    "Perempuan" ? (
+                                                        <input
+                                                            type="radio"
+                                                            name="jenis_kelamin"
+                                                            className="border border-sky-500"
+                                                            value="Perempuan"
+                                                            id="Perempuan"
+                                                            onChange={(e) =>
+                                                                setJenisKelamin(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            }
+                                                            defaultChecked={
+                                                                guru.jenis_kelamin ===
+                                                                "Perempuan"
+                                                            }
+                                                            checked
+                                                        />
+                                                    ) : (
+                                                        <input
+                                                            type="radio"
+                                                            name="jenis_kelamin"
+                                                            className="border border-sky-500"
+                                                            value="Perempuan"
+                                                            id="Perempuan"
+                                                            onChange={(e) =>
+                                                                setJenisKelamin(
+                                                                    e.target
+                                                                        .value
+                                                                )
+                                                            }
+                                                            defaultChecked={
+                                                                guru.jenis_kelamin ===
+                                                                "Perempuan"
+                                                            }
+                                                        />
+                                                    )}
                                                     <label htmlFor="Perempuan">
                                                         Perempuan
                                                     </label>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="flex flex-col gap-y-2 w-full md:w-1/2">
-                                            <label
-                                                htmlFor="no_hp"
-                                                className="font-bold text-sm text-slate-500"
-                                            >
-                                                No. Handphone
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="no_hp"
-                                                id="no_hp"
-                                                className="rounded-md shadow-md px-2 py-1 border border-sky-500 outline-none"
-                                                defaultValue={guru.no_hp}
-                                                onChange={(e) =>
-                                                    setNoHP(e.target.value)
-                                                }
-                                            />
-                                        </div>
                                     </div>
                                     <div className="flex flex-col md:flex-row md:gap-x-5 gap-y-5 w-full">
-                                        <div className="flex flex-col gap-y-3 md:gap-x-3 w-full md:w-1/2">
-                                            <label
-                                                htmlFor="image_profile"
-                                                className="text-sm font-bold text-slate-500"
-                                            >
-                                                Gambar profile
-                                            </label>
-
-                                            <div className="rounded-md ring ring-sky-300 overflow-hidden flex justify-center items-center">
-                                                <img
-                                                    src={
-                                                        imagePreview
-                                                            ? imagePreview
-                                                            : `${repoimages}${guru.image_profile}`
+                                        <div className="flex flex-col w-full md:w-1/2 gap-y-2">
+                                            <div className="flex flex-col gap-y-2 w-full">
+                                                <label
+                                                    htmlFor="no_hp"
+                                                    className="font-bold text-sm text-slate-500"
+                                                >
+                                                    No. Handphone
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="no_hp"
+                                                    id="no_hp"
+                                                    className="rounded-md shadow-md px-2 py-1 border border-sky-500 outline-none"
+                                                    defaultValue={guru.no_hp}
+                                                    onChange={(e) =>
+                                                        setNoHP(e.target.value)
                                                     }
-                                                    className="w-full"
                                                 />
                                             </div>
-                                            <input
-                                                type="file"
-                                                onChange={(e) =>
-                                                    onImageUpload(e)
-                                                }
-                                                className="file:rounded-full file:bg-white file:border file:border-sky-200 file:text-primary file:text-sm file:font-bold"
-                                            />
-                                        </div>
+                                            <div className="flex flex-col gap-y-3 md:gap-x-3 w-full">
+                                                <label
+                                                    htmlFor="image_profile"
+                                                    className="text-sm font-bold text-slate-500"
+                                                >
+                                                    Gambar profile
+                                                </label>
 
+                                                <div className="rounded-md ring ring-sky-300 overflow-hidden flex justify-center items-center">
+                                                    <img
+                                                        src={
+                                                            imagePreview
+                                                                ? imagePreview
+                                                                : `${repoimages}${guru.image_profile}`
+                                                        }
+                                                        className="w-full"
+                                                    />
+                                                </div>
+                                                <input
+                                                    type="file"
+                                                    onChange={(e) =>
+                                                        onImageUpload(e)
+                                                    }
+                                                    className="file:rounded-full file:bg-white file:border file:border-sky-200 file:text-primary file:text-sm file:font-bold"
+                                                />
+                                                {error.image_profile ? (
+                                                    <p className="text-xs text-rose-500 font-thin">
+                                                        {error.image_profile}
+                                                    </p>
+                                                ) : (
+                                                    ""
+                                                )}
+                                            </div>
+                                        </div>
                                         <div className="flex flex-col gap-y-2 w-full md:w-1/2">
                                             <label
                                                 htmlFor="alamat"
@@ -262,7 +361,7 @@ function UpdateDataGuru() {
                                             </label>
                                             <textarea
                                                 className="rounded-md shadow-md border border-sky-500 outline-none p-3 font-bold text-sm"
-                                                rows="5"
+                                                rows="20"
                                                 defaultValue={guru.alamat}
                                                 onChange={(e) =>
                                                     setAlamat(e.target.value)
@@ -270,6 +369,7 @@ function UpdateDataGuru() {
                                             ></textarea>
                                         </div>
                                     </div>
+
                                     <div className="flex flex-col md:flex-row">
                                         <button
                                             type="submit"

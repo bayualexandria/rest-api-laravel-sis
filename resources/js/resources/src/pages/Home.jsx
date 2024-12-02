@@ -5,17 +5,16 @@ import Cookies from "js-cookie";
 import repositori from "../utils/repositories";
 import Semester from "./semester/Semester";
 
-
-
 function Home() {
     const [guru, setGuru] = useState("");
     const [siswa, setSiswa] = useState("");
-   
+    const [loadData, setLoadData] = useState(false);
 
     const data = Cookies.get("authentication");
     const token = data.split(",");
 
     const dataGuru = async () => {
+        setLoadData(true);
         try {
             let response = await fetch(`${repositori}guru`, {
                 method: "GET",
@@ -24,14 +23,17 @@ function Home() {
                     Authorization: "Bearer " + token[0],
                 },
             }).then((res) => res.json());
-
-            setGuru(response.data.length);
+            if (response.status == 200) {
+                setLoadData(false);
+                setGuru(response.data.length);
+            }
         } catch (error) {
             console.log(error);
         }
     };
 
     const dataSiswa = async () => {
+        setLoadData(true);
         try {
             let response = await fetch(`${repositori}siswa`, {
                 method: "GET",
@@ -40,21 +42,19 @@ function Home() {
                     Authorization: "Bearer " + token[0],
                 },
             }).then((res) => res.json());
-            setSiswa(response.data.length);
+            if (response.status == 200) {
+                setLoadData(false);
+                setSiswa(response.data.length);
+            }
         } catch (error) {
             console.log(error);
         }
     };
 
-   
-
     useEffect(() => {
         dataGuru();
         dataSiswa();
-        
     }, []);
-
-  
 
     return (
         <Main>
@@ -93,11 +93,30 @@ function Home() {
                                         Guru
                                     </h3>
                                 </div>
-                                <div className="flex justify-center pt-1">
-                                    <p className="text-xl font-bold text-slate-500 group-hover:text-white">
-                                        {guru}
-                                    </p>
-                                </div>
+                                {loadData ? (
+                                    <div className="w-full justify-center items-center flex flex-col">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth="1.5"
+                                            stroke="currentColor"
+                                            className="size-6 animate-spin text-slate-500 font-bold"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+                                            />
+                                        </svg>
+                                    </div>
+                                ) : (
+                                    <div className="flex justify-center pt-1">
+                                        <p className="text-xl font-bold text-slate-500 group-hover:text-white">
+                                            {guru}
+                                        </p>
+                                    </div>
+                                )}
                             </Link>
 
                             <Link
@@ -121,11 +140,30 @@ function Home() {
                                         Siswa
                                     </h3>
                                 </div>
-                                <div className="flex justify-center pt-1">
-                                    <p className="text-xl font-bold text-slate-500 group-hover:text-white">
-                                        {siswa}
-                                    </p>
-                                </div>
+                                {loadData ? (
+                                    <div className="w-full justify-center items-center flex flex-col">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth="1.5"
+                                            stroke="currentColor"
+                                            className="size-6 animate-spin text-slate-500 font-bold"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+                                            />
+                                        </svg>
+                                    </div>
+                                ) : (
+                                    <div className="flex justify-center pt-1">
+                                        <p className="text-xl font-bold text-slate-500 group-hover:text-white">
+                                            {siswa}
+                                        </p>
+                                    </div>
+                                )}
                             </Link>
 
                             <Link className="p-6 transition duration-300 bg-white rounded-lg shadow-lg group ring-1 ring-slate-900/5 hover:bg-indigo-500 hover:ring-indigo-500">
@@ -175,7 +213,7 @@ function Home() {
                                 </div>
                             </Link>
                         </div>
-                       <Semester/>
+                        <Semester />
                     </div>
                 </div>
             </div>

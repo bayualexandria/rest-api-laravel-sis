@@ -112,6 +112,7 @@ function ChangePassword() {
                         title: `${response.message}`,
                     });
                     setTimeout(() => {
+                        Cookies.remove("authentication");
                         return (window.location.href = "/");
                     }, 900);
                 }, 1000);

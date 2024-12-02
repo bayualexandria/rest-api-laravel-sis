@@ -49,7 +49,7 @@ function PopUpLogout() {
         <>
             {user == null && <Navigate to="/login" replace={true} />}
             <button
-                className="flex items-center gap-3 hover:text-slate-300 cursor-pointer"
+                className="flex items-center gap-3 hover:text-slate-300 cursor-pointer outline-none"
                 onClick={popUpLogoutButton}
             >
                 <svg
