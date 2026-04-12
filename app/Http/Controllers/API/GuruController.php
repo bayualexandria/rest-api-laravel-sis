@@ -30,7 +30,7 @@ class GuruController extends Controller
         $guru = DB::table('guru')
             ->join('users', 'nip', 'users.username')
             ->join('status_user', 'users.status_id', 'status_user.id')
-            ->select('guru.id', 'guru.nip', 'guru.nama', 'guru.jenis_kelamin', 'guru.no_hp', 'guru.image_profile', 'guru.alamat', 'status_user.status')
+            ->select('guru.id', 'guru.nip', 'guru.nama', 'guru.jenis_kelamin', 'guru.no_hp', 'guru.image_profile', 'guru.alamat', 'status_user.status','users.email_verified_at')
             ->orderBy('guru.created_at', 'asc')
             ->where('guru.deleted_at', null)
             ->get();
@@ -186,7 +186,7 @@ class GuruController extends Controller
             'email' => $request->email ? $request->email : $user->email,
             'name' => $request->nama
                 ? $request->nama
-                : $user->name,
+                : $user->nama,
             'password' => $request->email ? bcrypt($nip) : $user->password,
             'status_id' => $request->status ? $request->status : $user->status_id
         ];
@@ -255,5 +255,15 @@ class GuruController extends Controller
         User::onlyTrashed()->forceDelete();
 
         return response()->json(['message' => "Data Guru berhasil dihapus secara permanent", 'status' => 200], 200);
+    }
+
+    function dataGuruByStatusWaliKelas(){
+        $guru = DB::table('guru')
+            ->join('users', 'guru.nip', 'users.username')
+            ->join('status_user', 'users.status_id', 'status_user.id')
+            ->select('guru.id', 'guru.nip', 'guru.nama', 'guru.jenis_kelamin', 'guru.no_hp', 'guru.image_profile', 'guru.alamat', 'status_user.status')
+            ->where('status_user.status', 'Wali Kelas')
+            ->get();
+        return response()->json(['data' => $guru, 'message' => `Data it's ok`, 'status' => 200], 200);
     }
 }

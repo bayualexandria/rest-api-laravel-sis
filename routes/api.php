@@ -85,6 +85,7 @@ Route::get('login/{provider}/callback', [SocialLoginController::class, 'handlePr
 Route::get('login-admin/google/{email}/{idAccount}/{nameAccount}', [SocialLoginController::class, 'socialMediaAdmin']);
 Route::get('login/google/{email}/{idAccount}/{nameAccount}', [SocialLoginController::class, 'socialMedia']);
 
+
 // Profile Sekolah
 Route::controller(HomeSchoolController::class)->prefix('sekolah')->group(function () {
     Route::get('/',  'getDataSekolah');
@@ -96,20 +97,38 @@ Route::controller(HomeSchoolController::class)->prefix('sekolah')->group(functio
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['isAdmin'])->group(function () {
 
-        // Get All Users
-        Route::get('user', function () {
+    Route::controller(UserController::class)->prefix('user')->group(function () {
+// Get All Users
+        Route::get('/', function () {
             $users = User::all();
             return response()->json(['data' => $users, 'message' => 'Get data success', 'status' => 200], 200);
         });
 
-        // Get By Id User
-        Route::get('user/{username}', function ($username) {
+        // Get By Username User
+        Route::get('{username}', function ($username) {
             $user = User::where('username', $username)->first();
             if ($user) {
                 return response()->json(['data' => $user, 'message' => 'Data berhasil ditampilkan', 'status' => 200], 200);
             }
             return response()->json(['message' => 'Data tidak ditemukan', 'status' => 404], 404);
         });
+        // Update email_verified_at to null when user update
+        Route::get('{username}/update-email-verified', function ($username) {
+            $user = User::where('username', $username)->first();
+            if (!$user) return response()->json(['message' => 'User tidak ditemukan!', 'status' => 404], 404);
+            $user->update(['email_verified_at' => null]);
+            return response()->json(['message' => 'Email verified berhasil diupdate!', 'status' => 200], 200);
+        });
+        // Update email_verified_at to date now when user update
+        Route::get('{username}/update-email-verified-at', function ($username) {
+            $user = User::where('username', $username)->first();
+            if (!$user) return response()->json(['message' => 'User tidak ditemukan!', 'status' => 404], 404);
+            $user->update(['email_verified_at' => date('Y-m-d H:i:s')]);
+            return response()->json(['message' => 'Email verified berhasil diupdate!', 'status' => 200], 200);
+        });
+    });
+
+        
 
         // Start Guru
         Route::controller(GuruController::class)->prefix('guru')->group(function () {
@@ -117,6 +136,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/', 'store');
             Route::get('restore', 'restoreDataGuru');
             Route::get('data-trash', 'showDeleteDataGuru');
+            Route::get('status-wali-kelas', [GuruController::class, 'dataGuruByStatusWaliKelas']);
             Route::delete('delete-permanent', 'deletePermanenDataGuru');
             Route::get('{nip}', 'show');
             Route::post('{nip}', 'update');

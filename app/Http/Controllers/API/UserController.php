@@ -45,4 +45,34 @@ class UserController extends Controller
         $user->notify(new ChangedPassword($user, $request->newPassword));
         return response()->json(['message' => "Password telah diperbaharui", 'status' => 200], 200);
     }
-}
+
+    function update($username, Request $request)
+    {
+        $user = $this->user->where('username', $username)->first();
+
+        if (!$user) return response()->json(['message' => "User tidak ditemukan!", 'status' => 404], 404);
+
+        $validation = Validator::make($request->all(), [
+            'nama' => 'string',
+            'email' => 'email|unique:users,email,' . $user->id,
+            'status' => 'integer|in:1,2'
+        ], [
+            'nama.string' => 'Nama harus berupa string',
+            'email.email' => 'Yang anda masukan bukan email',
+            'email.unique' => 'Email sudah terdaftar',
+            'status.integer' => 'Status harus berupa angka',
+            'status.in' => 'Status harus bernilai 1 atau 2'
+        ]);
+
+        if ($validation->fails()) return response()->json(['message' => $validation->errors(), 'status' => 401], 401);
+
+        $data = [
+            'name' => $request->nama,
+            'email' => $request->email,
+            'status_id' => $request->status
+        ];
+
+        $user->update($data);
+        return response()->json(['message' => "Data user berhasil diperbarui", 'status' => 200], 200);
+    }
+    }

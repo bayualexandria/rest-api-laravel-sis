@@ -11,28 +11,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthenticationController extends Controller
 {
-    /**
- * Login user
- *
- * @group Authentication
- *
- * @bodyParam email string required Email user. Example: irma@email.com
- * @bodyParam password string required Password user. Example: password123
- *
- * @response 200 {
- *  "success": true,
- *  "message": "Login berhasil",
- *  "data": {
- *    "token": "1|abcdefg"
- *  }
- * }
- */
-/**
- * Login user
- *
- * @group Authentication
- * @unauthenticated
- */
+
     function register(Request $request)
     {
         $validation = Validator::make($request->all(), [
